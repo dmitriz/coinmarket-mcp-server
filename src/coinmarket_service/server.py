@@ -2,13 +2,13 @@ import os
 
 from dotenv import load_dotenv
 from typing import Any
-import requests
 import json
 from mcp.server.models import InitializationOptions
 import mcp.types as types
 from mcp.server import NotificationOptions, Server
 from pydantic import AnyUrl
 import mcp.server.stdio
+from security import safe_requests
 
 load_dotenv()
 API_KEY = os.getenv("COINMARKET_API_KEY")
@@ -28,7 +28,7 @@ async def get_currency_listings() -> dict[str, Any]:
       'X-CMC_PRO_API_KEY': API_KEY,
     }
 
-    response = requests.get(url, headers=headers, params=parameters)
+    response = safe_requests.get(url, headers=headers, params=parameters)
     response.raise_for_status()
     data = json.loads(response.text)
     return data
@@ -48,7 +48,7 @@ async def get_quotes(slug: str | None, symbol: str | None) -> dict[str, Any]:
       'X-CMC_PRO_API_KEY': API_KEY,
     }
 
-    response = requests.get(url, headers=headers, params=parameters)
+    response = safe_requests.get(url, headers=headers, params=parameters)
     response.raise_for_status()
     data = json.loads(response.text)
     return data
